@@ -27,7 +27,7 @@
 }
 
 .inputSection {
-  width: 600px;
+  width: 900px;
   display: flex;
   gap: 10px;
 }
@@ -112,6 +112,10 @@
 
 .inventoryTable th {
   background-color: rgb(50, 50, 50);
+}
+
+.inventoryTable td button {
+  padding: 0 10px;
 }
 
 .lowStock {
