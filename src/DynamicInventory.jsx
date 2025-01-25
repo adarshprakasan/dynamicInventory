@@ -13,7 +13,7 @@ function DynamicInventory() {
   });
   const [toggle, setToggle] = useState({ show: false, id: null });
   const [filterCategory, setFilterCategory] = useState("All");
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState(null); // Default is no sorting
   const editRef = useRef(null);
 
   useEffect(() => {
@@ -45,15 +45,17 @@ function DynamicInventory() {
   };
 
   const updateItem = () => {
-    const updatedList = [...list];
-    updatedList[toggle.id] = {
-      name: itemName,
-      category,
-      quantity: parseInt(quantity, 10),
-    };
-    setList(updatedList);
-    setToggle({ show: false, id: null });
-    resetInputs();
+    if (toggle.id !== null) {
+      const updatedList = [...list];
+      updatedList[toggle.id] = {
+        name: itemName,
+        category,
+        quantity: parseInt(quantity, 10),
+      };
+      setList(updatedList);
+      setToggle({ show: false, id: null });
+      resetInputs();
+    }
   };
 
   const resetInputs = () => {
@@ -67,9 +69,11 @@ function DynamicInventory() {
       ? list
       : list.filter((item) => item.category === filterCategory);
 
-  const sortedList = [...filteredList].sort((a, b) =>
-    sortOrder === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity
-  );
+  const sortedList = sortOrder
+    ? [...filteredList].sort((a, b) =>
+        sortOrder === "asc" ? a.quantity - b.quantity : b.quantity - a.quantity
+      )
+    : filteredList; // No sorting if sortOrder is null
 
   return (
     <div className="mainBody">
@@ -111,10 +115,11 @@ function DynamicInventory() {
           ))}
         </select>
         <select
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
+          value={sortOrder || "default"} // Default option for unsorted
+          onChange={(e) => setSortOrder(e.target.value === "default" ? null : e.target.value)}
           className="sortDropdown"
         >
+          <option value="default">No Sorting</option>
           <option value="asc">Sort by Quantity (Ascending)</option>
           <option value="desc">Sort by Quantity (Descending)</option>
         </select>
